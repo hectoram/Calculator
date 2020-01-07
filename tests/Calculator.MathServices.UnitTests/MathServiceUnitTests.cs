@@ -15,7 +15,6 @@ namespace Calculator.MathServices.UnitTests
         }
 
         [Theory]
-        [InlineData("-1","0",-1)]
         [InlineData("0","1",1)]
         [InlineData("1","3",4)]
         [InlineData("10","5",15)]
@@ -26,7 +25,6 @@ namespace Calculator.MathServices.UnitTests
         }
 
         [Theory]
-        [InlineData("-19","Welcome To The ThunderDome",-19)]
         [InlineData("50","RandomString",50)]
         [InlineData("30","",30)]
         [InlineData("12",null,12)]
@@ -60,5 +58,13 @@ namespace Calculator.MathServices.UnitTests
 
             Assert.Equal("10", result);
         }
+
+        [Fact] 
+        public void Add_ThrowsException_NegativeValues_ArePassed() 
+        { 
+            Assert.Throws<ArgumentException>(() => _mathService.Add("1,-2,3")); 
+            Assert.Throws<ArgumentException>(() => _mathService.Add("1,2,3,-4")); 
+            Assert.Throws<ArgumentException>(() => _mathService.Add("-1,4,5")); 
+        } 
     }
 }

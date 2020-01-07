@@ -8,13 +8,26 @@ namespace Calculator.MathServices
         public string Add(string paramString)
         {
             var parsedList = ProccessUserInput(paramString);
+            var negativeNumbers = new List<int>();
+
             var total = 0;
 
             foreach(string i in parsedList)
             {
-                if (Int32.TryParse(i, out int j))
-                    total = total + j;    
+                if(!string.IsNullOrWhiteSpace(i) && Int32.TryParse(i, out int parsedValue))
+                {
+                    if (parsedValue >= 0)
+                    {
+                        total = total + parsedValue;   
+                    }else
+                    {
+                        negativeNumbers.Add(parsedValue);
+                    } 
+                }
             }
+
+            if(negativeNumbers.Count > 0)
+                throw new ArgumentException($"Negative Numbers Were Provided: {String.Join(",", negativeNumbers)}");
 
             return total.ToString();
         }
