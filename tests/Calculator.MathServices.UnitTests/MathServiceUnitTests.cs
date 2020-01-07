@@ -38,11 +38,15 @@ namespace Calculator.MathServices.UnitTests
         }
 
         [Fact]
-        public void Add_ThrowsException_When_MoreThan_TwoValues_ArePassed()
+        public void Add_Accepts_MultipleParameters()
         {
-            Assert.Throws<ArgumentException>(() => _mathService.Add("1,2,3"));
-            Assert.Throws<ArgumentException>(() => _mathService.Add("1,2,3,4"));
-            Assert.Throws<ArgumentException>(() => _mathService.Add("1,2,3,4,5"));
+            string first = "2";
+            string second = "5";
+            string last = "3";
+
+            var result = _mathService.Add($"{first},{second},{last}");
+
+            Assert.Equal(result, "10");
         }
     }
 }

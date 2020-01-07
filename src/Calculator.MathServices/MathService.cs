@@ -22,12 +22,6 @@ namespace Calculator.MathServices
         private string[] ProccessUserInput(string paramString)
         {
             var parsedList = paramString.Split(',');
-            
-            if(parsedList.Length > 2)
-            {
-                throw new ArgumentException();
-            }
-
             return parsedList;
         }
     }

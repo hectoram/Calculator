@@ -20,14 +20,7 @@ namespace Calculator
             while (true)
             {
                 var userInput = Console.ReadLine();
-                try
-                {
-                    Console.WriteLine($"{mathService.Add(userInput)}");
-                }
-                catch(ArgumentException ex)
-                {
-                    Console.WriteLine("Invalid Parameters Provided");
-                }
+                Console.WriteLine($"{mathService.Add(userInput)}");
             }
         }
 
