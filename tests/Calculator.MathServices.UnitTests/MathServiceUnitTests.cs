@@ -22,7 +22,7 @@ namespace Calculator.MathServices.UnitTests
         public void Add_Returns_CorrectSum(string first, string second, int expectedResult)
         {
             var result = _mathService.Add($"{first},{second}");
-            Assert.Equal(result, expectedResult.ToString());
+            Assert.Equal(expectedResult.ToString(), result);
         }
 
         [Theory]
@@ -34,7 +34,7 @@ namespace Calculator.MathServices.UnitTests
         public void Add_Returns_Zero_When_InvalidParameters_ArePassed(string first, string second, int expectedResult)
         {
             var result = _mathService.Add($"{first},{second}");
-            Assert.Equal(result, expectedResult.ToString());
+            Assert.Equal(expectedResult.ToString(), result);
         }
 
         [Fact]
@@ -46,7 +46,19 @@ namespace Calculator.MathServices.UnitTests
 
             var result = _mathService.Add($"{first},{second},{last}");
 
-            Assert.Equal(result, "10");
+            Assert.Equal("10", result);
+        }
+
+        [Fact]
+        public void Add_Accepts_NewLine_AsDelimiter()
+        {
+            string first = "2";
+            string second = "5";
+            string last = "3";
+
+            var result = _mathService.Add($"{first}{@"\n"}{second},{last}");
+
+            Assert.Equal("10", result);
         }
     }
 }

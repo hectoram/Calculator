@@ -21,7 +21,7 @@ namespace Calculator.MathServices
 
         private string[] ProccessUserInput(string paramString)
         {
-            var parsedList = paramString.Split(',');
+            var parsedList = paramString.Split(new string[] { ",", @"\n" }, StringSplitOptions.None);
             return parsedList;
         }
     }
