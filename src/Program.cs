@@ -26,8 +26,6 @@ namespace Calculator
 
         protected static void ExitHandler(object sender, ConsoleCancelEventArgs args)
         {
-            Console.WriteLine($"Closing Down");
-
             if(_serviceProvider == null)
             {
                 return;

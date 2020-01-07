@@ -29,7 +29,7 @@ namespace Calculator.MathServices.UnitTests
                     .Returns(CreateParserReturn(first, second));
 
             var result = _mathService.Add($"{first},{second}");
-            Assert.Equal(expectedResult.ToString(), result);
+            Assert.Equal(expectedResult.ToString(), GetTotal(result));
         }
 
         [Theory]
@@ -45,7 +45,7 @@ namespace Calculator.MathServices.UnitTests
                     .Returns(CreateParserReturn(first, second));
             
             var result = _mathService.Add($"{first},{second}");
-            Assert.Equal(expectedResult.ToString(), result);
+            Assert.Equal(expectedResult.ToString(), GetTotal(result));
         }
 
         [Fact]
@@ -60,7 +60,7 @@ namespace Calculator.MathServices.UnitTests
 
             var result = _mathService.Add($"{first},{second},{last}");
 
-            Assert.Equal("10", result);
+            Assert.Equal("10", GetTotal(result));
         }
 
         [Fact]
@@ -75,7 +75,7 @@ namespace Calculator.MathServices.UnitTests
 
             var result = _mathService.Add($"{first}{@"\n"}{second},{last}");
 
-            Assert.Equal("10", result);
+            Assert.Equal("10", GetTotal(result));
         }
 
         [Fact] 
@@ -103,7 +103,7 @@ namespace Calculator.MathServices.UnitTests
                     
             var result = _mathService.Add($"{first},{second},{last}");
 
-            Assert.Equal("8", result);  
+            Assert.Equal("8", GetTotal(result));  
         }
 
         [Fact]
@@ -117,7 +117,24 @@ namespace Calculator.MathServices.UnitTests
 
             var result = temp.Add($"{first}{second}{last}");
 
-            Assert.Equal("18", result);  
+            Assert.Equal("18", GetTotal(result));  
+        }
+
+        [Theory]
+        [InlineData("2,,4,rrrr,1001,6","2+0+4+0+0+6 = 12")]
+        [InlineData("2,4,rrrr,1001,6","2+4+0+0+6 = 12")]
+        [InlineData(@"//#\n2#5","2+5 = 7")]
+        public void Add_Returns_Correct_AdditonFormula(string input, string expectedResult)
+        {
+            var temp = new MathService(new InputParser());
+            var result = temp.Add(input);
+
+            Assert.Equal(expectedResult, result);  
+        }
+
+        private string GetTotal(string result)
+        {
+            return result.Substring(result.IndexOf("=") + 2);;
         }
 
         private string[] CreateParserReturn(string first, string second, string last = "")

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Calculator.MathServices.Helpers;
 
 namespace Calculator.MathServices
@@ -32,6 +33,7 @@ namespace Calculator.MathServices
         private string GetSum(string[] parsedArray)
         {
             var total = 0;
+            StringBuilder sb = new StringBuilder();
 
             foreach(string i in parsedArray)
             {
@@ -40,14 +42,25 @@ namespace Calculator.MathServices
                     if (parsedValue >= 0)
                     {
                         if(parsedValue <= _maxValue)
+                        {
+                            sb.Append($"{i.ToString()}+");
                             total = total + parsedValue;   
+                        }else
+                        {
+                            sb.Append("0+");
+                        }
                     }else
                     {
                         _negativeNumbers.Add(parsedValue);
                     } 
+                }else
+                {
+                    sb.Append("0+");
                 }
             }
-            return total.ToString();
+            sb.Length--; // Remove last + sign
+
+            return $"{sb} = {total.ToString()}";
         }
     }
 }
