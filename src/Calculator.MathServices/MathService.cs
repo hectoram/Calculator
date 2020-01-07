@@ -5,6 +5,7 @@ namespace Calculator.MathServices
 {
     public class MathService : IMathService
     {
+        private int _maxValue = 1000;
         public string Add(string paramString)
         {
             var parsedList = ProccessUserInput(paramString);
@@ -18,7 +19,8 @@ namespace Calculator.MathServices
                 {
                     if (parsedValue >= 0)
                     {
-                        total = total + parsedValue;   
+                        if(parsedValue <= _maxValue)
+                            total = total + parsedValue;   
                     }else
                     {
                         negativeNumbers.Add(parsedValue);

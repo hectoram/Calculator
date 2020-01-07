@@ -29,6 +29,8 @@ namespace Calculator.MathServices.UnitTests
         [InlineData("30","",30)]
         [InlineData("12",null,12)]
         [InlineData("122","    ",122)]
+        [InlineData("1002","2",2)]
+        [InlineData("3003","6",6)]
         public void Add_Returns_Zero_When_InvalidParameters_ArePassed(string first, string second, int expectedResult)
         {
             var result = _mathService.Add($"{first},{second}");
@@ -66,5 +68,17 @@ namespace Calculator.MathServices.UnitTests
             Assert.Throws<ArgumentException>(() => _mathService.Add("1,2,3,-4")); 
             Assert.Throws<ArgumentException>(() => _mathService.Add("-1,4,5")); 
         } 
+
+        [Fact]
+        public void Add_Returns_Zero_When_InvalidParameters_ArePassed_And_MoreThan_TwoParameters()
+        {
+            string first = "10000";
+            string second = "5";
+            string last = "3";
+
+            var result = _mathService.Add($"{first},{second},{last}");
+
+            Assert.Equal("8", result);
+        }
     }
 }
