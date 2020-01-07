@@ -48,5 +48,15 @@ namespace Calculator.MathServices.UnitTests
             var result = _parser.Parse(paramString);
             Assert.Equal(expectedCount, result.Length);
         }
+
+        [Theory]
+        [InlineData(@"//[*][!!][r9r]\n11r9r22*hh*33!!44",5)]
+        [InlineData(@"//[::][?]\n11::22?3", 3)]
+        [InlineData(@"//[%][--]\n2%5%3--4",4)]
+        public void Parse_Returns_CorrectCount_For_Multiple_MultiCharDelimiter(string paramString, int expectedCount)
+        {
+            var result = _parser.Parse(paramString);
+            Assert.Equal(expectedCount, result.Length);
+        }
     }
 }
