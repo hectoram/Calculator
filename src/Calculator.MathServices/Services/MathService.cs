@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Calculator.MathServices.Helpers;
+using Calculator.MathServices.Models;
 
 namespace Calculator.MathServices
 {
@@ -21,27 +22,31 @@ namespace Calculator.MathServices
         {
             _negativeNumbers.Clear();
 
-            var parsedArray = _parser.Parse(paramString);
-            var total = GetSum(parsedArray);
+            var userInput = _parser.Parse(paramString);
+            var total = GetSum(userInput);
 
-            if(_negativeNumbers.Count > 0)
+            if(!userInput.AllowNegatives && _negativeNumbers.Count > 0)
                 throw new ArgumentException($"Negative Numbers Were Provided: {String.Join(",", _negativeNumbers)}");
 
             return total.ToString();
         }
 
-        private string GetSum(string[] parsedArray)
+        private string GetSum(UserInput userInput)
         {
             var total = 0;
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
+            var upperLimit = _maxValue;
 
-            foreach(string i in parsedArray)
+            if(userInput.UpperBound != int.MinValue)
+                upperLimit = userInput.UpperBound;
+
+            foreach(string i in userInput.Values)
             {
                 if(!string.IsNullOrWhiteSpace(i) && Int32.TryParse(i, out int parsedValue))
                 {
                     if (parsedValue >= 0)
                     {
-                        if(parsedValue <= _maxValue)
+                        if(parsedValue <= upperLimit)
                         {
                             sb.Append($"{i.ToString()}+");
                             total = total + parsedValue;   
@@ -51,6 +56,7 @@ namespace Calculator.MathServices
                         }
                     }else
                     {
+                        sb.Append("0+");
                         _negativeNumbers.Add(parsedValue);
                     } 
                 }else

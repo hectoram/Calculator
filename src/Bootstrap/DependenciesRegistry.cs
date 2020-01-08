@@ -12,6 +12,7 @@ namespace Calculator.Bootstrap
             var collection = new ServiceCollection();
             collection.AddScoped<IMathService, MathService>();
             collection.AddScoped<IInputParser, InputParser>();
+            collection.AddScoped<IUserFlagParser, UserFlagParser>();
 
             var serviceProvider = collection.BuildServiceProvider();      
             return serviceProvider;

@@ -1,18 +1,22 @@
 using System;
+using System.Collections.Generic;
 using Xunit;
 using Moq;
 
 using Calculator.MathServices;
 using Calculator.MathServices.Helpers;
+using Calculator.MathServices.Models;
 
 namespace Calculator.MathServices.UnitTests
 {
     public class InputParserUnitTests
     {
         private readonly IInputParser _parser;
+        private readonly Mock<IUserFlagParser> _userFlagParser;
         public InputParserUnitTests()
         {
-            _parser = new InputParser();
+            _userFlagParser = new Mock<IUserFlagParser>();
+            _parser = new InputParser(_userFlagParser.Object);
         }
 
         [Theory]
@@ -23,8 +27,9 @@ namespace Calculator.MathServices.UnitTests
         [InlineData("50,3,4",3)]
         public void Parse_Returns_CorrectCount_For_CommaAndNewLine(string paramString, int expectedCount)
         {
+            SetUserFlagReturn(paramString);
             var result = _parser.Parse(paramString);
-            Assert.Equal(expectedCount, result.Length);
+            Assert.Equal(expectedCount, result.Values.Count);
         }
 
         [Theory]
@@ -34,8 +39,9 @@ namespace Calculator.MathServices.UnitTests
         [InlineData(@"//%\n2%5\n3,5",4)]
         public void Parse_Returns_CorrectCount_For_SingleCharDelimiter(string paramString, int expectedCount)
         {
+            SetUserFlagReturn(paramString);
             var result = _parser.Parse(paramString);
-            Assert.Equal(expectedCount, result.Length);
+            Assert.Equal(expectedCount, result.Values.Count);
         }
 
         [Theory]
@@ -45,8 +51,9 @@ namespace Calculator.MathServices.UnitTests
         [InlineData(@"//[%%]\n2%%5%%3",3)]
         public void Parse_Returns_CorrectCount_For_MultiCharDelimiter(string paramString, int expectedCount)
         {
+            SetUserFlagReturn(paramString);
             var result = _parser.Parse(paramString);
-            Assert.Equal(expectedCount, result.Length);
+            Assert.Equal(expectedCount, result.Values.Count);
         }
 
         [Theory]
@@ -55,8 +62,22 @@ namespace Calculator.MathServices.UnitTests
         [InlineData(@"//[%][--]\n2%5%3--4",4)]
         public void Parse_Returns_CorrectCount_For_Multiple_MultiCharDelimiter(string paramString, int expectedCount)
         {
+            SetUserFlagReturn(paramString);
             var result = _parser.Parse(paramString);
-            Assert.Equal(expectedCount, result.Length);
+            Assert.Equal(expectedCount, result.Values.Count);
+        }
+
+        private void SetUserFlagReturn(string userInput)
+        {
+            _userFlagParser.Setup(x => x.Parse(It.IsAny<string>()))
+                .Returns
+                (
+                    new UserInput
+                    {
+                        Delimiters = new List<string>(),
+                        ParsedInput = userInput
+                    }
+                );
         }
     }
 }

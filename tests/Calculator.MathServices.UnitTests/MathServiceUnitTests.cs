@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using Xunit;
 using Moq;
 
 using Calculator.MathServices;
 using Calculator.MathServices.Helpers;
+using Calculator.MathServices.Models;
 
 namespace Calculator.MathServices.UnitTests
 {
@@ -113,7 +115,7 @@ namespace Calculator.MathServices.UnitTests
             string second = "5#";
             string last = "3";
 
-            var temp = new MathService(new InputParser());
+            var temp = new MathService(new InputParser(new UserFlagParser()));
 
             var result = temp.Add($"{first}{second}{last}");
 
@@ -124,9 +126,10 @@ namespace Calculator.MathServices.UnitTests
         [InlineData("2,,4,rrrr,1001,6","2+0+4+0+0+6 = 12")]
         [InlineData("2,4,rrrr,1001,6","2+4+0+0+6 = 12")]
         [InlineData(@"//#\n2#5","2+5 = 7")]
+        [InlineData(@"-n=t||//#\n2#-5","2+0 = 2")]
         public void Add_Returns_Correct_AdditonFormula(string input, string expectedResult)
         {
-            var temp = new MathService(new InputParser());
+            var temp = new MathService(new InputParser(new UserFlagParser()));
             var result = temp.Add(input);
 
             Assert.Equal(expectedResult, result);  
@@ -137,9 +140,9 @@ namespace Calculator.MathServices.UnitTests
             return result.Substring(result.IndexOf("=") + 2);;
         }
 
-        private string[] CreateParserReturn(string first, string second, string last = "")
+        private UserInput CreateParserReturn(string first, string second, string last = "")
         {
-            return new string[]{$"{first}", $"{second}", $"{last}"};
+            return new UserInput() { Values = new List<string>(){$"{first}", $"{second}", $"{last}"}};
         }
     }
 }
