@@ -20,7 +20,7 @@ namespace Calculator
             while (true)
             {
                 var userInput = Console.ReadLine();
-                Console.WriteLine($"{mathService.Add(userInput)}");
+                Console.WriteLine($"{mathService.Process(userInput)}");
             }
         }
 

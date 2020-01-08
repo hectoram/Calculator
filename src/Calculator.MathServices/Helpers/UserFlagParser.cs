@@ -16,7 +16,7 @@ namespace Calculator.MathServices.Helpers
             result.UpperBound = Common.DefaultUpperBound;
 
             if(paramString.Contains(Common.EndCustomParametersSequence))
-                ProccessUserFlags(paramString, result);
+                ProcessUserFlags(paramString, result);
             else
                 result.ParsedInput = paramString;
 
@@ -25,7 +25,7 @@ namespace Calculator.MathServices.Helpers
 
         //Flags Possible -d (delimiter) -o (Opperation) -b (UpperBound) -n (Negative Allowance T|F)
         //Following pattern is now reserved || as end of custom ops :)
-        private void ProccessUserFlags(string paramString, UserInput result)
+        private void ProcessUserFlags(string paramString, UserInput result)
         {
             if(paramString.Contains(Common.DelimiterFlag))
             {
@@ -58,7 +58,23 @@ namespace Calculator.MathServices.Helpers
                 paramString = RemoveFlagFromUserInput(paramString, $"{Common.UpperBoundFlag}{result.UpperBound}", string.Empty);
             }
             
-            result.ParsedInput = RemoveFlagFromUserInput(paramString, $"{Common.EndCustomParametersSequence}", string.Empty);
+            if(paramString.Contains(Common.OperationFlag))
+            {
+                var startIndex = paramString.IndexOf(Common.EndCustomParametersSequence);
+                var opsString = paramString.Substring(0, startIndex);
+
+                if(opsString.IndexOf(Operation.Sub.ToString(), StringComparison.InvariantCultureIgnoreCase) >= 0)
+                    result.Operation = Operation.Sub;
+
+                if(opsString.IndexOf(Operation.Mul.ToString(), StringComparison.InvariantCultureIgnoreCase) >= 0)
+                    result.Operation = Operation.Mul;
+
+                if(opsString.IndexOf(Operation.Div.ToString(), StringComparison.InvariantCultureIgnoreCase) >= 0)
+                    result.Operation = Operation.Div;
+            }
+
+            var removeIndex = paramString.IndexOf(Common.EndCustomParametersSequence);           
+            result.ParsedInput =  paramString.Substring(removeIndex + 2); // Remove both || characters
         }
 
         private string RemoveFlagFromUserInput(string inputString, string replacePattern, string replacement)

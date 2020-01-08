@@ -13,7 +13,7 @@ namespace Calculator.MathServices.Helpers
         public const string DelimiterFlag = "-d=";
         public const string UpperBoundFlag = "-b=";
         public const string NegativeAllowanceFlag = "-n=";
-        public const string OperationFlag = "-n=";
+        public const string OperationFlag = "-o=";
         public const string EndCustomParametersSequence = "||";
 
         public static string[] DefaultDelimiters = new string[]{@"\n", ","};

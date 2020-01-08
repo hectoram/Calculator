@@ -9,3 +9,10 @@ Step 1
 
 - Attempted to get it into a single solution with no success
 - Imperfect code, while not fantastic, can be better than broken code
+
+
+Final Commit notes: 
+- Possible flag usage -d (delimiter) -o (Opperation) -b (UpperBound) -n (Negative Allowance T|F)
+  - Supported ops Multiply, divide, add, subtract
+  - Example: -b=1005-n=f-o=div||6,2
+- Upfront design saves a lot of time. Stretch goal #3 hits hard if not planned for.

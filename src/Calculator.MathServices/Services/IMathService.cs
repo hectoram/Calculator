@@ -4,6 +4,6 @@ namespace Calculator.MathServices
 {
     public interface IMathService
     {
-        string Add(string paramString);
+        string Process(string paramString);
     }
 }

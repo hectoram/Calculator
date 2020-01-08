@@ -8,22 +8,32 @@ namespace Calculator.MathServices
 {
     public class MathService : IMathService
     {
+        private readonly int _maxValue = 1000;
+        private readonly List<int> _negativeNumbers;
+        private readonly string _zeroValue = "0";
+        private readonly Dictionary<Operation, string> _operationStrings;
+
         private readonly IInputParser _parser;
-        private int _maxValue = 1000;
-        private List<int> _negativeNumbers;
 
         public MathService(IInputParser parser)
         {
             _parser = parser ?? throw new ArgumentNullException(nameof(parser));
             _negativeNumbers = new List<int>();
+            _operationStrings = new Dictionary<Operation, string>
+            {
+                {Operation.Add, "+"},
+                {Operation.Sub, "-"},
+                {Operation.Mul, "*"},
+                {Operation.Div, "/"}
+            };
         }
         
-        public string Add(string paramString)
+        public string Process(string paramString)
         {
             _negativeNumbers.Clear();
 
             var userInput = _parser.Parse(paramString);
-            var total = GetSum(userInput);
+            var total = GetTotal(userInput);
 
             if(!userInput.AllowNegatives && _negativeNumbers.Count > 0)
                 throw new ArgumentException($"Negative Numbers Were Provided: {String.Join(",", _negativeNumbers)}");
@@ -31,11 +41,12 @@ namespace Calculator.MathServices
             return total.ToString();
         }
 
-        private string GetSum(UserInput userInput)
+        private string GetTotal(UserInput userInput)
         {
             var total = 0;
             var sb = new StringBuilder();
             var upperLimit = _maxValue;
+            var isFirstRun = true;
 
             if(userInput.UpperBound != int.MinValue)
                 upperLimit = userInput.UpperBound;
@@ -48,25 +59,49 @@ namespace Calculator.MathServices
                     {
                         if(parsedValue <= upperLimit)
                         {
-                            sb.Append($"{i.ToString()}+");
-                            total = total + parsedValue;   
+                            sb.Append($"{i.ToString()}{_operationStrings[userInput.Operation]}");                       
+                            if(isFirstRun && userInput.Operation != Operation.Add)
+                            {
+                                total = ProcessTotal(Operation.Add, total, parsedValue);
+                                isFirstRun = false;
+                            } else
+                            {
+                                total = ProcessTotal(userInput.Operation, total, parsedValue); 
+                            }
                         }else
                         {
-                            sb.Append("0+");
+                            sb.Append($"{_zeroValue}{_operationStrings[userInput.Operation]}");
                         }
                     }else
                     {
-                        sb.Append("0+");
+                        sb.Append($"{_zeroValue}{_operationStrings[userInput.Operation]}");
                         _negativeNumbers.Add(parsedValue);
                     } 
                 }else
                 {
-                    sb.Append("0+");
+                    sb.Append($"{_zeroValue}{_operationStrings[userInput.Operation]}");
                 }
             }
             sb.Length--; // Remove last + sign
 
             return $"{sb} = {total.ToString()}";
         }
+
+    private int ProcessTotal(Operation userOp, int currentTotal, int nextNumber)
+    {
+        switch (userOp)
+        {
+            case  Operation.Add:
+                return currentTotal + nextNumber;
+            case Operation.Sub:
+                return currentTotal - nextNumber;
+            case Operation.Mul:
+                return currentTotal * nextNumber;
+            case Operation.Div:
+                return currentTotal / nextNumber;
+            default:
+                return 0;
+        }
+    }
     }
 }
